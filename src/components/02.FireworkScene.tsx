@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as RPointerEvent } from "react";
 import { useStory } from "../context/StoryContext";
 import { fireworkConfig as fwCfg } from "../config/media.js";
+import BirthdayCake, { CAKE_OUT_TOTAL_MS } from "./BirthdayCake";
 
 const FWState = {
   IDLE: 0,
@@ -104,6 +105,8 @@ export default function FireworkScene() {
 
   const stateRef = useRef<FWStateKind>(FWState.IDLE);
   const [hintMode, setHintMode] = useState<"start" | "wish" | "off">("off");
+  // kue ulang tahun di awal scene: idle (lilin menyala) -> out (ditiup, memudar) -> gone (dibuang dari DOM)
+  const [cake, setCake] = useState<"idle" | "out" | "gone">("idle");
   const doneTriggeredRef = useRef(false);
   const startedRef = useRef(false);
   const musicStartedRef = useRef(false);
@@ -259,6 +262,7 @@ export default function FireworkScene() {
     lastWishPosRef.current = null;
     clearTimers();
     setHintMode("off");
+    setCake("idle");
   };
 
   // =====================================================================
@@ -865,7 +869,12 @@ export default function FireworkScene() {
         void tryAutoStartScene2();
       }
       setHintMode("off");
-      startMainBirthday(cw, ch);
+      // lilin ditiup padam -> kue memudar -> baru kembang api pertama masuk
+      setCake("out");
+      addTimer(() => {
+        setCake("gone");
+        startMainBirthday(cw, ch);
+      }, CAKE_OUT_TOTAL_MS);
       return;
     }
 
@@ -925,6 +934,8 @@ export default function FireworkScene() {
         style={{ display: "block", touchAction: "none" }}
       />
 
+      {cake !== "gone" && <BirthdayCake out={cake === "out"} reduce={reduced} />}
+
       {/* Label petunjuk seperti di video */}
       <div
         className="absolute left-0 right-0 text-center pointer-events-none select-none"
@@ -942,7 +953,7 @@ export default function FireworkScene() {
         aria-hidden
       >
         <span style={{ color: "#FF9A4A" }}>✦</span>{" "}
-        {hintShownRef.current === "start" ? "TAP LAYAR UNTUK MULAI" : "TAP-TAP LAYAR UNTUK DOA UNTUK AYANG"}{" "}
+        {hintShownRef.current === "start" ? "TAP UNTUK MENIUP LILIN" : "TAP-TAP LAYAR UNTUK DOA UNTUK AYANG"}{" "}
         <span style={{ color: "#FF9A4A" }}>✦</span>
       </div>
 
