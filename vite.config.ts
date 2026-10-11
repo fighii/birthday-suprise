@@ -4,7 +4,7 @@ import { defineConfig } from 'vite'
 const isProd = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
-  base: isProd ? "/birthday-surprise/" : "/",
+  base: isProd ? "/birthday-suprise/" : "/",
   plugins: [react()],
   server: {
     host: '0.0.0.0',
