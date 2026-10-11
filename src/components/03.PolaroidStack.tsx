@@ -18,7 +18,7 @@ interface PolaroidDeckProps {
 }
 
 const TOTAL_TARGET = 30;
-const FINAL_LAST_COUNT = 3; // 3 foto terakhir rapi di tengah (finale)
+const FINAL_LAST_COUNT = 1; // 3 foto terakhir rapi di tengah (finale)
 const FIRST_DELAY_MS = 1100;
 const CARD_RATIO = 1.22; // tinggi kartu = lebar * 1.22
 const EDGE_MARGIN = 10; // jarak aman kartu ke tepi area stack (px)
@@ -154,7 +154,7 @@ function captionFit(text: string, cw: number, pad: number) {
 
 // Hanya kartu terakhir yang dirender; kartu lama sudah tertutup & redup, jadi dibuang dari DOM
 // (hemat memori decode foto + layer GPU di HP).
-const RENDER_WINDOW = 8;
+const RENDER_WINDOW = 5;
 // Kartu ke-(RENDER_WINDOW + 1) masih dirender sebentar sambil memudar, baru dibuang dari DOM,
 // jadi kartu terbawah tidak "pop" hilang tiba-tiba.
 const FADE_OUT_MS = 500;
